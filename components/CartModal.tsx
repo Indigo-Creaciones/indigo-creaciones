@@ -171,13 +171,22 @@ export default function CartModal({ onClose }: { onClose: () => void }) {
                       className="flex items-center space-x-3 md:space-x-4 bg-white p-3 md:p-4 rounded-xl shadow-sm hover:shadow-lg transition-shadow duration-300 border border-terra-100"
                     >
                       <div className="relative w-16 h-16 md:w-20 md:h-20 flex-shrink-0 overflow-hidden rounded-lg border border-terra-100">
-                        <Image
-                          src={item.image}
-                          alt={item.name}
-                          fill
-                          style={{ objectFit: "cover" }}
-                          className="rounded-lg"
-                        />
+                        {item.image ? (
+                          <Image
+                            src={item.image}
+                            alt={item.name}
+                            fill
+                            style={{ objectFit: "cover" }}
+                            className="rounded-lg"
+                          />
+                        ) : (
+                          <div className="w-full h-full bg-terra-100 flex items-center justify-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" className="w-8 h-8 text-terra-300" viewBox="0 0 20 20" fill="currentColor">
+                              <path d="M5 8a1 1 0 011-1h8a1 1 0 110 2H6a1 1 0 01-1-1z" />
+                              <path fillRule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clipRule="evenodd" />
+                            </svg>
+                          </div>
+                        )}
                       </div>
                       <div className="flex-1 min-w-0">
                         <h3 className="font-semibold text-terra-700 truncate text-base md:text-lg">{item.name}</h3>
