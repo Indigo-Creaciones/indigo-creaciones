@@ -89,7 +89,7 @@ export default function PoliticaPrivacidad() {
       <header className="bg-terra-800 shadow-md">
         <div className="container mx-auto px-4 py-4">
           <Link href="/" className="flex items-center space-x-3">
-            <Image src="/logo.webp" alt="Indigo Creaciones" width={40} height={40} className="rounded-lg" style={{width: '40px', height: '40px'}} />
+            <Image src="/icon.webp" alt="Indigo Creaciones" width={40} height={40} className="rounded-lg" style={{width: '40px', height: '40px'}} />
             <span className="text-terra-100 font-playfair text-xl">Indigo Creaciones</span>
           </Link>
         </div>

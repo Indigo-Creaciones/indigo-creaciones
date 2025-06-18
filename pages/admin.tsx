@@ -174,7 +174,7 @@ export default function Admin() {
       <header className="bg-terra-100 shadow-md">
         <div className="container mx-auto px-4 py-4">
           <Link href="/" className="flex items-center space-x-3">
-            <Image src="/logo.webp" alt="Indigo Creaciones" width={40} height={40} />
+            <Image src="/icon.webp" alt="Indigo Creaciones" width={40} height={40} />
             <span className="text-terra-700 font-playfair text-xl cursor-pointer">Indigo Creaciones</span>
           </Link>
         </div>

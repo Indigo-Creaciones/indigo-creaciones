@@ -46,7 +46,7 @@ export default function Login() {
       <header className="bg-terra-100 shadow-md">
         <div className="container mx-auto px-4 py-4">
           <Link href="/" className="flex items-center space-x-3">
-            <Image src="/logo.webp" alt="Indigo Creaciones" width={40} height={40} style={{width: '40px', height: '40px'}} />
+            <Image src="/icon.webp" alt="Indigo Creaciones" width={40} height={40} style={{width: '40px', height: '40px'}} />
             <span className="text-terra-700 font-playfair text-xl">Indigo Creaciones</span>
           </Link>
         </div>
@@ -60,7 +60,7 @@ export default function Login() {
           className="w-full max-w-md mx-auto bg-white/90 backdrop-blur-lg rounded-2xl shadow-2xl p-8 md:p-10 border border-terra-100"
         >
           <div className="flex flex-col items-center mb-8">
-            <Image src="/logo.webp" alt="Indigo Creaciones" width={60} height={60} className="mb-2" style={{width: '60px', height: '60px'}} />
+            <Image src="/icon.webp" alt="Indigo Creaciones" width={60} height={60} className="mb-2" style={{width: '60px', height: '60px'}} />
             <h1 className="text-3xl font-playfair text-terra-700 mb-1">Login Administrativo</h1>
             <p className="text-terra-600 text-sm">Acceso exclusivo para administradores</p>
           </div>

@@ -468,7 +468,7 @@ export default function Home() {
             {/* Columna 1: Logo e información */}
             <div className="space-y-4">              <div className="flex flex-col items-center mb-6">
                 <Image 
-                  src="/logo.webp" 
+                  src="/icon.webp"
                   alt="Indigo Creaciones" 
                   width={90} 
                   height={90} 

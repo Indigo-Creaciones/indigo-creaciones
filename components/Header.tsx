@@ -107,7 +107,7 @@ export default function Header() {
       <header className={`header-shadow header-border sticky top-0 z-50 transition-colors duration-300 ${headerClass}`}> 
         <div className="w-full flex items-center justify-between p-4 lg:px-0 xl:px-0 2xl:px-0">
           <Link href="/" className="logo-highlight gap-3" style={{height: '72px'}}>
-              <Image src="/logo.webp" alt="Indigo Creaciones Logo" width={72} height={72} style={{height: '72px', width: '72px', minWidth: '72px', minHeight: '72px', objectFit: 'contain'}} />
+              <Image src="/icon.webp" alt="Indigo Creaciones Logo" width={72} height={72} style={{height: '72px', width: '72px', minWidth: '72px', minHeight: '72px', objectFit: 'contain'}} />
               <span className="font-playfair text-2xl font-bold drop-shadow logo-title">Indigo Creaciones</span>
           </Link>
           <div className="flex-1 flex justify-center min-w-0">
