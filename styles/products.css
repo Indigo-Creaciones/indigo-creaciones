@@ -1,28 +1,19 @@
 /* Estilos para la galería de imágenes */
 .product-gallery {
   width: 100%;
-  max-width: 600px;
+  max-width: 400px;
   margin: 0 auto;
 }
 
-/* Personalización del slider */
 .image-gallery-slide {
   border-radius: 0.5rem;
   overflow: hidden;
 }
 
-.image-gallery-thumbnail {
-  border-radius: 0.25rem;
-  overflow: hidden;
-  transition: all 0.3s ease;
-}
-
-.image-gallery-thumbnail:hover {
-  transform: scale(1.05);
-}
-
-.image-gallery-thumbnail.active {
-  border: 2px solid #c2410c; /* terra-600 */
+@media (max-width: 640px) {
+  .product-gallery {
+    max-width: 300px;
+  }
 }
 
 /* Animaciones para las tarjetas de productos */

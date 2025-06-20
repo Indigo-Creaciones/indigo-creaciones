@@ -12,6 +12,8 @@ interface ShippingModalProps {
 const ShippingModal = ({ onClose, onConfirm }: ShippingModalProps) => {
   const [withShipping, setWithShipping] = useState<boolean | null>(null)
   const [zipCode, setZipCode] = useState('')
+  const [zipCodeError, setZipCodeError] = useState<string | null>(null)
+
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 backdrop-blur-sm">
@@ -62,12 +64,23 @@ const ShippingModal = ({ onClose, onConfirm }: ShippingModalProps) => {
               type="text"
               id="zipCode"
               value={zipCode}
-              onChange={(e) => setZipCode(e.target.value)}
+              onChange={(e) => {
+                const value = e.target.value
+                setZipCode(value)
+                if (value === "3432") {
+                  setZipCodeError("No se realizan envios dentro de la ciudad. Disculpe las molestias.")
+                } else {
+                  setZipCodeError(null)
+                }
+              }}
               className="w-full p-3 border border-terra-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-terra-400 text-lg"
               required
               placeholder="Ej: 3400"
               maxLength={8}
             />
+            {zipCodeError && (
+              <p className="mt-2 text-red-500 text-sm font-medium">{zipCodeError}</p>
+            )}
           </div>
         )}
         <div className="flex space-x-4 mt-2">
@@ -84,7 +97,7 @@ const ShippingModal = ({ onClose, onConfirm }: ShippingModalProps) => {
               if (withShipping === null) return
               onConfirm(withShipping, withShipping ? zipCode : undefined)
             }}
-            disabled={withShipping === null || (withShipping && !zipCode)}
+            disabled={withShipping === null || (withShipping && (!zipCode || zipCode === "3432"))}
             style={{fontFamily: 'Playfair Display, serif', letterSpacing: '0.01em'}}
           >
             Confirmar

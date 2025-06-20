@@ -13,8 +13,8 @@ import { FaChevronLeft, FaChevronRight } from 'react-icons/fa'
 
 // Tipos
 interface CloudinaryImage {
-  url: string;
-  public_id: string;
+  url: string
+  public_id: string
 }
 
 interface Product {
@@ -41,11 +41,11 @@ const categories = [
 // Componente de Skeleton Loading mejorado
 const ProductSkeleton = () => (
   <div className="bg-white rounded-lg shadow-md overflow-hidden animate-pulse">
-    <div className="h-48 bg-terra-100"/>
+    <div className="h-48 bg-terra-100" />
     <div className="p-4 space-y-3">
-      <div className="h-4 bg-terra-100 rounded w-3/4"/>
-      <div className="h-4 bg-terra-100 rounded w-1/2"/>
-      <div className="h-4 bg-terra-100 rounded w-1/4"/>
+      <div className="h-4 bg-terra-100 rounded w-3/4" />
+      <div className="h-4 bg-terra-100 rounded w-1/2" />
+      <div className="h-4 bg-terra-100 rounded w-1/4" />
     </div>
   </div>
 )
@@ -55,12 +55,13 @@ function normalizeText(text: string) {
   return text
     .toLowerCase()
     .normalize('NFD')
-    .replace(/\p{Diacritic}/gu, '');
+    .replace(/\p{Diacritic}/gu, '')
 }
 
 export default function Products() {
   const { addItem } = useCart()
-  const router = useRouter();
+  const router = useRouter()
+
   // Estados
   const [selectedCategory, setSelectedCategory] = useState('Todas')
   const [searchTerm, setSearchTerm] = useState('')
@@ -79,17 +80,19 @@ export default function Products() {
       const res = await fetch('/api/products')
       const data = await res.json()
       const newProducts = data.products.map((p: any) => {
-        const images = (p.images || []).map((img: any) => {
-          if (typeof img === 'string') {
-            return { url: img, public_id: '' };
-          }
-          if (img && typeof img === 'object' && img.url) {
-            return img;
-          }
-          return null;
-        }).filter((i: CloudinaryImage | null): i is CloudinaryImage => i !== null);
+        const images = (p.images || [])
+          .map((img: any) => {
+            if (typeof img === 'string') {
+              return { url: img, public_id: '' }
+            }
+            if (img && typeof img === 'object' && img.url) {
+              return img
+            }
+            return null
+          })
+          .filter((i: CloudinaryImage | null): i is CloudinaryImage => i !== null)
 
-        return { ...p, id: p._id, images };
+        return { ...p, id: p._id, images }
       })
       // Solo actualiza si hay cambios
       if (JSON.stringify(newProducts) !== JSON.stringify(products)) {
@@ -116,9 +119,9 @@ export default function Products() {
   // Leer parámetros de la URL al cargar
   useEffect(() => {
     if (router.isReady) {
-      const { categoria, filtro } = router.query;
+      const { categoria, filtro } = router.query
       if (categoria && typeof categoria === 'string' && categories.includes(categoria)) {
-        setSelectedCategory(categoria);
+        setSelectedCategory(categoria)
       }
       // Si quieres lógica especial para filtro avanzado, agrégala aquí
       // if (filtro === 'avanzado') { ... }
@@ -138,11 +141,11 @@ export default function Products() {
     }
 
     if (minPrice && typeof minPrice === 'string') {
-      setPriceRange(prev => ({ ...prev, min: minPrice }))
+      setPriceRange((prev) => ({ ...prev, min: minPrice }))
     }
 
     if (maxPrice && typeof maxPrice === 'string') {
-      setPriceRange(prev => ({ ...prev, max: maxPrice }))
+      setPriceRange((prev) => ({ ...prev, max: maxPrice }))
     }
 
     if (page && typeof page === 'string') {
@@ -167,20 +170,21 @@ export default function Products() {
   }
 
   // Aplicar filtros y ordenamiento
-  const filteredProducts = sortProducts(products.filter(product => {
-    const matchesCategory = selectedCategory === 'Todas' || product.category === selectedCategory
-    const matchesSearch = normalizeText(product.name).includes(normalizeText(searchTerm))
-    const matchesPrice = (!priceRange.min || product.price >= Number(priceRange.min)) &&
-                        (!priceRange.max || product.price <= Number(priceRange.max))
-    return matchesCategory && matchesSearch && matchesPrice
-  }))
+  const filteredProducts = sortProducts(
+    products.filter((product) => {
+      const matchesCategory = selectedCategory === 'Todas' || product.category === selectedCategory
+      const matchesSearch = normalizeText(product.name).includes(normalizeText(searchTerm))
+      const matchesPrice =
+        (!priceRange.min || product.price >= Number(priceRange.min)) &&
+        (!priceRange.max || product.price <= Number(priceRange.max))
+
+      return matchesCategory && matchesSearch && matchesPrice
+    })
+  )
 
   // Paginación
   const totalPages = Math.ceil(filteredProducts.length / productsPerPage)
-  const currentProducts = filteredProducts.slice(
-    (currentPage - 1) * productsPerPage,
-    currentPage * productsPerPage
-  )
+  const currentProducts = filteredProducts.slice((currentPage - 1) * productsPerPage, currentPage * productsPerPage)
 
   // Función para abrir WhatsApp
   const openWhatsApp = (product: Product) => {
@@ -202,7 +206,10 @@ export default function Products() {
 
   const handleWhatsAppClick = (e: React.MouseEvent, product: Product) => {
     e.stopPropagation()
-    const message = `¡Hola! Me interesa el producto "${product.name}" de precio $${product.onSale && product.salePrice ? product.salePrice : product.price}. ¿Podrías darme más información?`
+    const productUrl = `${window.location.origin}/productos/${product.id}`
+    const message = `¡Hola! Me interesa el producto "${product.name}" de precio $${
+      product.onSale && product.salePrice ? product.salePrice : product.price
+    }.\n\nPuedes ver el producto aquí: ${productUrl}\n\n¿Podrías darme más información?`
     const url = `https://wa.me/5493777283023?text=${encodeURIComponent(message)}`
     window.open(url, '_blank')
   }
@@ -218,14 +225,14 @@ export default function Products() {
 
       <main className="container mx-auto px-4 py-8">
         <div className="text-center mb-12">
-          <motion.h1 
+          <motion.h1
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             className="text-4xl font-playfair mb-4"
           >
             Nuestros Productos
           </motion.h1>
-          <motion.p 
+          <motion.p
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.2 }}
@@ -236,7 +243,7 @@ export default function Products() {
         </div>
 
         {/* Filtros */}
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           className="bg-white p-6 rounded-lg shadow-md mb-8"
@@ -244,7 +251,9 @@ export default function Products() {
           <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
             {/* Búsqueda por nombre */}
             <div className="md:col-span-2">
-              <label htmlFor="search" className="block text-terra-700 mb-1">Buscar</label>
+              <label htmlFor="search" className="block text-terra-700 mb-1">
+                Buscar
+              </label>
               <input
                 type="text"
                 id="search"
@@ -257,7 +266,9 @@ export default function Products() {
 
             {/* Filtro por categoría */}
             <div>
-              <label htmlFor="category" className="block text-terra-700 mb-1">Categoría</label>
+              <label htmlFor="category" className="block text-terra-700 mb-1">
+                Categoría
+              </label>
               <select
                 id="category"
                 className="w-full p-2 border border-terra-200 rounded-md focus:ring-2 focus:ring-terra-400 focus:border-transparent"
@@ -265,14 +276,18 @@ export default function Products() {
                 onChange={(e) => setSelectedCategory(e.target.value)}
               >
                 {categories.map((category) => (
-                  <option key={category} value={category}>{category}</option>
+                  <option key={category} value={category}>
+                    {category}
+                  </option>
                 ))}
               </select>
             </div>
 
             {/* Ordenamiento */}
             <div>
-              <label htmlFor="sort" className="block text-terra-700 mb-1">Ordenar por</label>
+              <label htmlFor="sort" className="block text-terra-700 mb-1">
+                Ordenar por
+              </label>
               <select
                 id="sort"
                 className="w-full p-2 border border-terra-200 rounded-md focus:ring-2 focus:ring-terra-400 focus:border-transparent"
@@ -293,8 +308,19 @@ export default function Products() {
                   className={`p-2 rounded ${viewMode === 'grid' ? 'bg-terra-500 text-white' : 'bg-terra-100'}`}
                   title="Vista en cuadrícula"
                 >
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-6 w-6"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"
+                    />
                   </svg>
                 </button>
                 <button
@@ -302,7 +328,13 @@ export default function Products() {
                   className={`p-2 rounded ${viewMode === 'list' ? 'bg-terra-500 text-white' : 'bg-terra-100'}`}
                   title="Vista en lista"
                 >
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-6 w-6"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
                   </svg>
                 </button>
@@ -312,16 +344,16 @@ export default function Products() {
         </motion.div>
 
         {/* Lista de productos */}
-        <div className={`${
-          viewMode === 'grid' 
-            ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6'
-            : 'space-y-4'
-        }`}>
+        <div
+          className={`${
+            viewMode === 'grid'
+              ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6'
+              : 'space-y-4'
+          }`}
+        >
           {isLoading ? (
             // Skeleton loading
-            Array.from({ length: 8 }).map((_, index) => (
-              <ProductSkeleton key={index} />
-            ))
+            Array.from({ length: 8 }).map((_, index) => <ProductSkeleton key={index} />)
           ) : currentProducts.length === 0 ? (
             <div className="col-span-full text-center py-12">
               <p className="text-terra-600 text-lg">No se encontraron productos que coincidan con los filtros.</p>
@@ -343,13 +375,19 @@ export default function Products() {
                   }
                   onClick={() => setSelectedProduct(product)}
                 >
-                  <div className={`${viewMode === 'grid' ? 'relative w-full aspect-square bg-terra-50 flex items-center justify-center' : 'relative h-40 w-40 flex-shrink-0 bg-terra-50 flex items-center justify-center'} group`}> 
+                  <div
+                    className={`${
+                      viewMode === 'grid'
+                        ? 'relative w-full aspect-square bg-terra-50 flex items-center justify-center'
+                        : 'relative h-40 w-40 flex-shrink-0 bg-terra-50 flex items-center justify-center'
+                    } group`}
+                  >
                     {product.images && product.images.length > 0 && product.images[0].url ? (
                       <Image
                         src={product.images[0].url}
                         alt={product.name}
                         fill
-                        style={{ objectFit: "contain" }}
+                        style={{ objectFit: 'contain' }}
                         className="transition-transform duration-500 group-hover:scale-105 rounded-xl"
                         sizes="(max-width: 768px) 100vw, 33vw"
                         priority={true}
@@ -370,7 +408,11 @@ export default function Products() {
                       </div>
                     )}
                   </div>
-                  <div className={`p-4 flex flex-col flex-1 justify-between ${viewMode === 'list' ? 'flex-1 flex-row items-center' : ''}`}> 
+                  <div
+                    className={`p-4 flex flex-col flex-1 justify-between ${
+                      viewMode === 'list' ? 'flex-1 flex-row items-center' : ''
+                    }`}
+                  >
                     <div>
                       <h3 className="text-lg font-semibold text-terra-700 mb-1 truncate">{product.name}</h3>
                       <p className="text-terra-600 mb-1 text-sm">{product.category}</p>
@@ -385,7 +427,11 @@ export default function Products() {
                         )}
                       </div>
                     </div>
-                    <div className={`mt-3 flex ${viewMode === 'list' ? 'flex-col space-y-2' : 'justify-between space-x-2'}`}>
+                    <div
+                      className={`mt-3 flex ${
+                        viewMode === 'list' ? 'flex-col space-y-2' : 'justify-between space-x-2'
+                      }`}
+                    >
                       <motion.button
                         whileHover={{ scale: 1.07 }}
                         whileTap={{ scale: 0.97 }}
@@ -420,14 +466,14 @@ export default function Products() {
 
         {/* Paginación */}
         {!isLoading && totalPages > 1 && (
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             className="mt-8 flex justify-center space-x-2"
           >
             <button
               className="px-4 py-2 rounded bg-terra-100 text-terra-700 hover:bg-terra-200 disabled:opacity-50"
-              onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+              onClick={() => setCurrentPage((prev) => Math.max(1, prev - 1))}
               disabled={currentPage === 1}
             >
               ←
@@ -436,9 +482,7 @@ export default function Products() {
               <button
                 key={page}
                 className={`px-4 py-2 rounded ${
-                  currentPage === page
-                    ? 'bg-terra-500 text-white'
-                    : 'bg-white text-terra-700 hover:bg-terra-100'
+                  currentPage === page ? 'bg-terra-500 text-white' : 'bg-white text-terra-700 hover:bg-terra-100'
                 }`}
                 onClick={() => setCurrentPage(page)}
               >
@@ -447,7 +491,7 @@ export default function Products() {
             ))}
             <button
               className="px-4 py-2 rounded bg-terra-100 text-terra-700 hover:bg-terra-200 disabled:opacity-50"
-              onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+              onClick={() => setCurrentPage((prev) => Math.min(totalPages, prev + 1))}
               disabled={currentPage === totalPages}
             >
               →
@@ -457,130 +501,129 @@ export default function Products() {
 
         {/* Modal de producto mejorado */}
         {selectedProduct && (
-          <motion.div 
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-2 md:p-4 z-50 modal-overlay"
+          <motion.div
+            initial={{ opacity: 0, y: '100%' }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: '100%' }}
+            transition={{ type: 'spring', bounce: 0.2 }}
+            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex flex-col md:items-center justify-end md:justify-center"
           >
-            <motion.div 
-              initial={{ scale: 0.95, opacity: 0, y: 20 }}
-              animate={{ scale: 1, opacity: 1, y: 0 }}
-              exit={{ scale: 0.95, opacity: 0, y: 20 }}
-              transition={{ type: 'spring', duration: 0.5 }}
-              className="modal-content bg-white rounded-2xl max-w-3xl w-full max-h-[95vh] overflow-y-auto relative shadow-2xl border border-terra-100"
-            >
-              <div className="p-4 md:p-8">
-                <div className="flex flex-col md:flex-row md:justify-between md:items-start gap-6 mb-4">
-                  <div className="flex-1 min-w-0">
-                    <h2 className="text-2xl md:text-3xl font-playfair text-terra-700 mb-1 break-words">{selectedProduct.name}</h2>
-                    <div className="flex flex-wrap gap-2 mb-2">
-                      {selectedProduct.featured && (
-                        <span className="product-tag bg-yellow-400 text-terra-800">Destacado</span>
-                      )}
-                      {selectedProduct.onSale && (
-                        <span className="product-tag bg-red-500 text-white">Oferta</span>
-                      )}
-                    </div>
+            {/* Contenedor principal del Modal */}
+            <div className="bg-white w-full h-[95vh] md:h-auto md:rounded-2xl md:max-w-3xl overflow-hidden shadow-2xl md:border md:border-terra-100 flex flex-col relative">
+              {/* Encabezado */}
+              <div className="sticky top-0 bg-white px-4 py-3 md:p-6 border-b border-terra-100 flex items-center justify-between">
+                <div className="flex-1 min-w-0 pr-8">
+                  <h2 className="text-xl md:text-3xl font-playfair text-terra-700 truncate">
+                    {selectedProduct.name}
+                  </h2>
+                  <div className="flex flex-wrap gap-2 mt-1">
+                    {selectedProduct.featured && (
+                      <span className="product-tag bg-yellow-400 text-terra-800">Destacado</span>
+                    )}
+                    {selectedProduct.onSale && (
+                      <span className="product-tag bg-red-500 text-white">Oferta</span>
+                    )}
                   </div>
-                  <button
-                    className="absolute top-4 right-4 flex items-center justify-center w-10 h-10 rounded-full bg-terra-100 text-terra-400 hover:bg-terra-500 hover:text-white focus:outline-none focus:ring-4 focus:ring-terra-300 shadow transition-all duration-200 text-2xl active:scale-90 focus:scale-105 z-20"
-                    onClick={() => setSelectedProduct(null)}
-                    aria-label="Cerrar modal"
-                    style={{fontWeight: 700, fontFamily: 'Playfair Display, serif'}}
-                  >
-                    ×
-                  </button>
                 </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
-                  <div className="relative w-full">
-                    <ImageGallery
-                      items={selectedProduct.images.map(image => ({
-                        original: image.url,
-                        thumbnail: image.url
-                      }))}
-                      showPlayButton={false}
-                      showFullscreenButton={true}
-                      showNav={true}
-                      additionalClass="product-gallery"
-                      renderLeftNav={(onClick, disabled) => (
-                        <button
-                          type="button"
-                          className="absolute top-1/2 left-2 -translate-y-1/2 z-10 bg-white/80 hover:bg-terra-500 hover:text-white text-terra-700 shadow-lg rounded-full p-2 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-terra-400"
-                          onClick={onClick}
-                          disabled={disabled}
-                          aria-label="Imagen anterior"
-                        >
-                          <FaChevronLeft size={22} />
-                        </button>
-                      )}
-                      renderRightNav={(onClick, disabled) => (
-                        <button
-                          type="button"
-                          className="absolute top-1/2 right-2 -translate-y-1/2 z-10 bg-white/80 hover:bg-terra-500 hover:text-white text-terra-700 shadow-lg rounded-full p-2 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-terra-400"
-                          onClick={onClick}
-                          disabled={disabled}
-                          aria-label="Imagen siguiente"
-                        >
-                          <FaChevronRight size={22} />
-                        </button>
-                      )}
-                    />
-                  </div>
-                  <div className="flex flex-col justify-between h-full">
-                    <div>
-                      <p className="text-terra-600 mb-2 text-base md:text-lg font-medium">{selectedProduct.category}</p>
-                      <p className="text-terra-700 mb-4 text-base md:text-lg">{selectedProduct.description}</p>
-                    </div>
-                    <div className="flex flex-col gap-4 mt-4 w-full">
-                      <div className="flex flex-col items-center mb-2">
-                        {selectedProduct.onSale && selectedProduct.salePrice ? (
-                          <>
-                            <span className="text-3xl font-bold text-red-500">${selectedProduct.salePrice}</span>
-                            <span className="text-xl text-terra-400 line-through">${selectedProduct.price}</span>
-                          </>
-                        ) : (
-                          <span className="text-3xl font-bold text-terra-800">${selectedProduct.price}</span>
-                        )}
-                      </div>
-                      <motion.button
-                        whileHover={{ scale: 1.02 }}
-                        whileTap={{ scale: 0.98 }}
-                        className="w-full group relative bg-terra-500 text-white px-6 py-4 rounded-xl hover:bg-terra-600 transition-all duration-300 shadow-lg hover:shadow-xl overflow-hidden text-lg font-semibold"
-                        onClick={() => {
-                          handleAddToCart(
-                            new MouseEvent('click') as any,
-                            selectedProduct
-                          )
-                          setSelectedProduct(null)
-                        }}
+                <button
+                  className="absolute right-2 top-2 flex items-center justify-center w-8 h-8 rounded-full bg-terra-100 text-terra-600 hover:bg-terra-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-terra-300 transition-all duration-200"
+                  onClick={() => setSelectedProduct(null)}
+                  aria-label="Cerrar modal"
+                >
+                  <span className="text-2xl" style={{ lineHeight: 0 }}>
+                    ×
+                  </span>
+                </button>
+              </div>
+
+              {/* Contenido scrollable */}
+              <div className="flex-1 overflow-y-auto">
+                {/* Galería sin miniaturas */}
+                <div className="relative w-full max-w-[400px] aspect-[4/3] bg-terra-50 flex items-center justify-center mx-auto p-4">
+                  <ImageGallery
+                    items={selectedProduct.images.map((image) => ({
+                      original: image.url,
+                      thumbnail: image.url
+                    }))}
+                    showPlayButton={false}
+                    showFullscreenButton={false}
+                    showNav={true}
+                    showThumbnails={false}
+                    additionalClass="product-gallery"
+                    renderLeftNav={(onClick, disabled) => (
+                      <button
+                        type="button"
+                        className="absolute top-1/2 left-2 -translate-y-1/2 z-10 bg-white/80 hover:bg-terra-500 hover:text-white text-terra-700 shadow-lg rounded-full p-2 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-terra-400"
+                        onClick={onClick}
+                        disabled={disabled}
+                        aria-label="Imagen anterior"
                       >
-                        <span className="absolute inset-0 bg-white/20 transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-700"></span>
-                        <span className="relative flex items-center justify-center gap-3 text-lg font-medium">
-                          <CartIcon className="w-6 h-6" />
-                          Agregar al Carrito
-                        </span>
-                      </motion.button>
-                      <motion.button
-                        whileHover={{ scale: 1.02 }}
-                        whileTap={{ scale: 0.98 }}
-                        className="w-full group relative bg-terra-500 text-white px-6 py-4 rounded-xl hover:bg-terra-600 transition-all duration-300 shadow-lg hover:shadow-xl overflow-hidden text-lg font-semibold"
-                        onClick={() => handleWhatsAppClick(
-                          new MouseEvent('click') as any,
-                          selectedProduct
-                        )}
+                        <FaChevronLeft size={22} />
+                      </button>
+                    )}
+                    renderRightNav={(onClick, disabled) => (
+                      <button
+                        type="button"
+                        className="absolute top-1/2 right-2 -translate-y-1/2 z-10 bg-white/80 hover:bg-terra-500 hover:text-white text-terra-700 shadow-lg rounded-full p-2 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-terra-400"
+                        onClick={onClick}
+                        disabled={disabled}
+                        aria-label="Imagen siguiente"
                       >
-                        <span className="absolute inset-0 bg-white/20 transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-700"></span>
-                        <span className="relative flex items-center justify-center gap-3 text-lg font-medium">
-                          <WhatsAppIcon className="w-6 h-6" />
-                          Consultar por WhatsApp
+                        <FaChevronRight size={22} />
+                      </button>
+                    )}
+                  />
+                </div>
+
+                {/* Información del producto */}
+                <div className="p-4 md:p-6">
+                  <p className="text-terra-600 text-base md:text-lg font-medium mb-2">{selectedProduct.category}</p>
+                  <p className="text-terra-700 text-sm md:text-lg mb-4">{selectedProduct.description}</p>
+
+                  {/* Precio */}
+                  <div className="flex flex-col items-center py-3 mb-4 bg-terra-50 rounded-lg">
+                    {selectedProduct.onSale && selectedProduct.salePrice ? (
+                      <>
+                        <span className="text-2xl md:text-3xl font-bold text-red-500">
+                          ${selectedProduct.salePrice}
                         </span>
-                      </motion.button>
-                    </div>
+                        <span className="text-base md:text-xl text-terra-400 line-through">
+                          ${selectedProduct.price}
+                        </span>
+                      </>
+                    ) : (
+                      <span className="text-2xl md:text-3xl font-bold text-terra-800">
+                        ${selectedProduct.price}
+                      </span>
+                    )}
                   </div>
                 </div>
               </div>
-            </motion.div>
+
+              {/* Barra inferior de acciones (sticky) */}
+              <div className="sticky bottom-0 bg-white border-t border-terra-100 p-4 grid grid-cols-2 gap-3">
+                <motion.button
+                  whileTap={{ scale: 0.98 }}
+                  className="bg-terra-500 text-white px-4 py-3 rounded-xl hover:bg-terra-600 transition-all duration-300 shadow-md active:shadow-inner text-base md:text-lg font-medium flex items-center justify-center gap-2"
+                  onClick={(e) => {
+                    handleAddToCart(e, selectedProduct)
+                    setSelectedProduct(null)
+                  }}
+                >
+                  <CartIcon className="w-6 h-6" />
+                  Agregar al Carrito
+                </motion.button>
+
+                <motion.button
+                  whileTap={{ scale: 0.98 }}
+                  className="bg-terra-500 text-white px-4 py-3 rounded-xl hover:bg-terra-600 transition-all duration-300 shadow-md active:shadow-inner text-base md:text-lg font-medium flex items-center justify-center gap-2"
+                  onClick={(e) => handleWhatsAppClick(e, selectedProduct)}
+                >
+                  <WhatsAppIcon className="w-6 h-6" />
+                  Consultar por WhatsApp
+                </motion.button>
+              </div>
+            </div>
           </motion.div>
         )}
       </main>
