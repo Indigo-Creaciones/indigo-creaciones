@@ -152,7 +152,7 @@
 /* Media queries para responsividad */
 @media (max-width: 640px) {
   .product-gallery {
-    max-width: 98vw;
+    max-width: 65vw;
     padding-left: 0 !important;
     padding-right: 0 !important;
   }

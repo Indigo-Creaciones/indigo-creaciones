@@ -506,13 +506,16 @@ export default function Products() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: '100%' }}
             transition={{ type: 'spring', bounce: 0.2 }}
-            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex flex-col md:items-center justify-end md:justify-center"
+            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4"
           >
             {/* Contenedor principal del Modal */}
-            <div className="bg-white w-full h-[95vh] md:h-auto md:rounded-2xl md:max-w-3xl overflow-hidden shadow-2xl md:border md:border-terra-100 flex flex-col relative">
+<div className="bg-white w-full rounded-2xl max-w-3xl max-h-[85vh] overflow-hidden shadow-2xl border border-terra-100 flex flex-col relative">
+
+
+
               {/* Encabezado */}
-              <div className="sticky top-0 bg-white px-4 py-3 md:p-6 border-b border-terra-100 flex items-center justify-between">
-                <div className="flex-1 min-w-0 pr-8">
+              <div className="sticky top-0 bg-white px-4 py-1.5 md:p-1 border-b border-terra-100 flex items-center justify-between">
+                <div className="flex-1 min-w-0 pr-8 text-center">
                   <h2 className="text-xl md:text-3xl font-playfair text-terra-700 truncate">
                     {selectedProduct.name}
                   </h2>
@@ -537,23 +540,28 @@ export default function Products() {
               </div>
 
               {/* Contenido scrollable */}
-              <div className="flex-1 overflow-y-auto">
-                {/* Galería sin miniaturas */}
-                <div className="relative w-full max-w-[400px] aspect-[4/3] bg-terra-50 flex items-center justify-center mx-auto p-4">
+<div className="flex-1 flex flex-col md:flex-row">
+
+                {/* Galería */}
+<div className="relative w-full md:w-1/2 h-auto max-h-[60vh] md:max-h-full bg-terra-50 flex items-center justify-center p-2">
+
+
                   <ImageGallery
                     items={selectedProduct.images.map((image) => ({
                       original: image.url,
                       thumbnail: image.url
                     }))}
                     showPlayButton={false}
-                    showFullscreenButton={false}
+                    showFullscreenButton={true}
                     showNav={true}
                     showThumbnails={false}
+                    thumbnailPosition="bottom"
+                    showBullets={false}
                     additionalClass="product-gallery"
                     renderLeftNav={(onClick, disabled) => (
                       <button
                         type="button"
-                        className="absolute top-1/2 left-2 -translate-y-1/2 z-10 bg-white/80 hover:bg-terra-500 hover:text-white text-terra-700 shadow-lg rounded-full p-2 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-terra-400"
+                        className="absolute top-1/2 left-0 md:left-2 -translate-y-1/2 z-10 bg-white/80 hover:bg-terra-500 hover:text-white text-terra-700 shadow-lg rounded-full p-2 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-terra-400"
                         onClick={onClick}
                         disabled={disabled}
                         aria-label="Imagen anterior"
@@ -564,7 +572,7 @@ export default function Products() {
                     renderRightNav={(onClick, disabled) => (
                       <button
                         type="button"
-                        className="absolute top-1/2 right-2 -translate-y-1/2 z-10 bg-white/80 hover:bg-terra-500 hover:text-white text-terra-700 shadow-lg rounded-full p-2 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-terra-400"
+                        className="absolute top-1/2 right-0 md:right-2 -translate-y-1/2 z-10 bg-white/80 hover:bg-terra-500 hover:text-white text-terra-700 shadow-lg rounded-full p-2 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-terra-400"
                         onClick={onClick}
                         disabled={disabled}
                         aria-label="Imagen siguiente"
@@ -576,52 +584,48 @@ export default function Products() {
                 </div>
 
                 {/* Información del producto */}
-                <div className="p-4 md:p-6">
+<div className="p-4 md:p-6 md:w-1/2 flex flex-col flex-1">
+
                   <p className="text-terra-600 text-base md:text-lg font-medium mb-2">{selectedProduct.category}</p>
                   <p className="text-terra-700 text-sm md:text-lg mb-4">{selectedProduct.description}</p>
-
-                  {/* Precio */}
-                  <div className="flex flex-col items-center py-3 mb-4 bg-terra-50 rounded-lg">
-                    {selectedProduct.onSale && selectedProduct.salePrice ? (
-                      <>
-                        <span className="text-2xl md:text-3xl font-bold text-red-500">
-                          ${selectedProduct.salePrice}
-                        </span>
-                        <span className="text-base md:text-xl text-terra-400 line-through">
-                          ${selectedProduct.price}
-                        </span>
-                      </>
-                    ) : (
-                      <span className="text-2xl md:text-3xl font-bold text-terra-800">
-                        ${selectedProduct.price}
-                      </span>
-                    )}
-                  </div>
                 </div>
               </div>
 
               {/* Barra inferior de acciones (sticky) */}
-              <div className="sticky bottom-0 bg-white border-t border-terra-100 p-4 grid grid-cols-2 gap-3">
-                <motion.button
+              <div className="sticky bottom-0 bg-white border-t border-terra-100 p-3">
+                {/* Precio */}
+                <div className="text-center mb-1 bg-terra-50 py-2 rounded-lg">
+                  {selectedProduct.onSale && selectedProduct.salePrice ? (
+                    <>
+                      <span className="text-2xl md:text-3xl font-bold text-red-500">${selectedProduct.salePrice}</span>
+                      <span className="text-base md:text-xl text-terra-400 line-through ml-2">${selectedProduct.price}</span>
+                    </>
+                  ) : (
+                    <span className="text-2xl md:text-3xl font-bold text-terra-800">${selectedProduct.price}</span>
+                  )}
+                </div>
+                <div className="grid grid-cols-2 gap-2">
+                  <motion.button
                   whileTap={{ scale: 0.98 }}
-                  className="bg-terra-500 text-white px-4 py-3 rounded-xl hover:bg-terra-600 transition-all duration-300 shadow-md active:shadow-inner text-base md:text-lg font-medium flex items-center justify-center gap-2"
+                  className="bg-terra-500 text-white px-3 py-2 rounded-xl hover:bg-terra-600 transition-all duration-300 shadow-md active:shadow-inner text-sm md:text-base font-medium flex items-center justify-center gap-2"
                   onClick={(e) => {
                     handleAddToCart(e, selectedProduct)
                     setSelectedProduct(null)
                   }}
                 >
-                  <CartIcon className="w-6 h-6" />
+                  <CartIcon className="w-5 h-5" />
                   Agregar al Carrito
-                </motion.button>
+                  </motion.button>
 
-                <motion.button
-                  whileTap={{ scale: 0.98 }}
-                  className="bg-terra-500 text-white px-4 py-3 rounded-xl hover:bg-terra-600 transition-all duration-300 shadow-md active:shadow-inner text-base md:text-lg font-medium flex items-center justify-center gap-2"
-                  onClick={(e) => handleWhatsAppClick(e, selectedProduct)}
-                >
-                  <WhatsAppIcon className="w-6 h-6" />
-                  Consultar por WhatsApp
-                </motion.button>
+                  <motion.button
+                    whileTap={{ scale: 0.98 }}
+                    className="bg-terra-500 text-white px-3 py-2 rounded-xl hover:bg-terra-600 transition-all duration-300 shadow-md active:shadow-inner text-sm md:text-base font-medium flex items-center justify-center gap-2"
+                    onClick={(e) => handleWhatsAppClick(e, selectedProduct)}
+                  >
+                    <WhatsAppIcon className="w-5 h-5" />
+                    Consultar por WhatsApp
+                  </motion.button>
+                </div>
               </div>
             </div>
           </motion.div>
