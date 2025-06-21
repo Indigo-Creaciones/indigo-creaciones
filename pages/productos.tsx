@@ -29,6 +29,8 @@ interface Product {
   salePrice?: number
 }
 
+type TagFilter = 'Todos' | 'Destacado' | 'Oferta'
+
 // Categorías
 const categories = [
   'Todas',
@@ -37,6 +39,9 @@ const categories = [
   'Piezas personalizadas',
   'Otros'
 ]
+
+// Etiquetas de productos
+const tags: TagFilter[] = ['Todos', 'Destacado', 'Oferta']
 
 // Componente de Skeleton Loading mejorado
 const ProductSkeleton = () => (
@@ -65,6 +70,7 @@ export default function Products() {
   // Estados
   const [selectedCategory, setSelectedCategory] = useState('Todas')
   const [searchTerm, setSearchTerm] = useState('')
+  const [selectedTag, setSelectedTag] = useState<TagFilter>('Todos')
   const [priceRange, setPriceRange] = useState({ min: '', max: '' })
   const [currentPage, setCurrentPage] = useState(1)
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null)
@@ -116,12 +122,6 @@ export default function Products() {
     fetchProducts()
     // eslint-disable-next-line
   }, [])
-
-  useEffect(() => {
-    const interval = setInterval(fetchProducts, 5000)
-    return () => clearInterval(interval)
-    // eslint-disable-next-line
-  }, [products])
 
   // Leer parámetros de la URL al cargar
   useEffect(() => {
@@ -185,7 +185,12 @@ export default function Products() {
         (!priceRange.min || product.price >= Number(priceRange.min)) &&
         (!priceRange.max || product.price <= Number(priceRange.max))
 
-      return matchesCategory && matchesSearch && matchesPrice
+      const matchesTag =
+        selectedTag === 'Todos' ||
+        (selectedTag === 'Destacado' && product.featured) ||
+        (selectedTag === 'Oferta' && product.onSale)
+
+      return matchesCategory && matchesSearch && matchesPrice && matchesTag
     })
   )
 
@@ -254,7 +259,7 @@ export default function Products() {
           animate={{ opacity: 1, y: 0 }}
           className="bg-white p-6 rounded-lg shadow-md mb-8"
         >
-          <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-6 gap-4">
             {/* Búsqueda por nombre */}
             <div className="md:col-span-2">
               <label htmlFor="search" className="block text-terra-700 mb-1">
@@ -284,6 +289,25 @@ export default function Products() {
                 {categories.map((category) => (
                   <option key={category} value={category}>
                     {category}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {/* Filtro por etiqueta */}
+            <div>
+              <label htmlFor="tag" className="block text-terra-700 mb-1">
+                Etiqueta
+              </label>
+              <select
+                id="tag"
+                className="w-full p-2 border border-terra-200 rounded-md focus:ring-2 focus:ring-terra-400 focus:border-transparent"
+                value={selectedTag}
+                onChange={(e) => setSelectedTag(e.target.value as TagFilter)}
+              >
+                {tags.map((tag) => (
+                  <option key={tag} value={tag}>
+                    {tag}
                   </option>
                 ))}
               </select>
@@ -366,7 +390,7 @@ export default function Products() {
             </div>
           ) : (
             <AnimatePresence>
-              {currentProducts.map((product) => (
+              {currentProducts.map((product, index) => (
                 <motion.div
                   key={product.id}
                   initial={{ opacity: 0, scale: 0.9 }}
@@ -396,7 +420,7 @@ export default function Products() {
                         style={{ objectFit: 'contain' }}
                         className="transition-transform duration-500 group-hover:scale-105 rounded-xl"
                         sizes="(max-width: 768px) 100vw, 33vw"
-                        priority={true}
+                        priority={index < 4} // Carga prioritaria para los primeros 4 productos
                       />
                     ) : (
                       <div className="w-full h-full bg-terra-100 flex items-center justify-center">
