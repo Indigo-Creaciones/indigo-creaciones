@@ -280,6 +280,7 @@ export default function Admin() {
                 className="w-full p-3 border border-terra-200 rounded-lg focus:ring-2 focus:ring-terra-400 focus:border-transparent bg-terra-50 text-terra-800 placeholder-terra-400 shadow-sm"
                 value={form.description}
                 onChange={handleInputChange}
+                maxLength={500}
                 placeholder="Descripción del producto"
                 disabled={loading}
               ></textarea>

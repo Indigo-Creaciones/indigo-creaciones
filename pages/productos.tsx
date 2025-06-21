@@ -515,22 +515,10 @@ export default function Products() {
             className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4"
           >
             {/* Contenedor principal del Modal */}
-<div className="bg-white w-full rounded-2xl max-w-3xl max-h-[85vh] overflow-hidden shadow-2xl border border-terra-100 flex flex-col relative">
+<div className="bg-white w-full rounded-2xl max-w-3xl max-h-[88vh] overflow-hidden shadow-2xl border border-terra-100 flex flex-col relative">
 
               {/* Encabezado */}
               <div className="sticky top-0 bg-white px-4 py-1.5 md:p-1 border-b border-terra-100 flex items-center justify-between">
-                {/* Etiquetas de Oferta/Destacado */}
-                <div className="absolute top-5 left-2 z-10 flex flex-row items-center gap-2">
-                  {selectedProduct.featured && (
-                    <span className="product-tag bg-yellow-400 text-terra-800 text-xs px-1 py-0.5 rounded-full font-semibold shadow sm:px-2 sm:py-1 whitespace-nowrap flex-shrink-0">
-                      Destacado
-                    </span>
-                  )}
-                  {selectedProduct.onSale && (
-                    <span className="product-tag bg-red-500 text-white text-xs px-1 py-0.5 rounded-full font-semibold shadow sm:px-2 sm:py-1 whitespace-nowrap flex-shrink-0">Oferta</span>
-                  )}
-                </div>
-
                 <div className="flex-1 min-w-0 pr-8 text-center">
                   <h2 className="text-xl md:text-3xl font-playfair text-terra-700 truncate">
                     {selectedProduct.name}
@@ -552,7 +540,19 @@ export default function Products() {
 
                 {/* Galería */}
 <div className="relative w-full md:w-1/2 h-auto max-h-[60vh] md:max-h-full bg-terra-50 flex items-center justify-center p-2">
-
+                  {/* Etiquetas de Oferta/Destacado */}
+                  <div className="absolute top-1 left-7 z-10 flex flex-col items-center space-y-6">
+                    {selectedProduct.featured && (
+                      <span className="product-tag bg-yellow-400 text-terra-800 text-xs px-2 py-1 rounded-full font-semibold shadow whitespace-nowrap">
+                        Destacado
+                      </span>
+                    )}
+                    {selectedProduct.onSale && (
+                      <span className="product-tag bg-red-500 text-white text-xs px-2 py-1 rounded-full font-semibold shadow whitespace-nowrap">
+                        Oferta
+                      </span>
+                    )}
+                  </div>
 
                   <ImageGallery
                     items={selectedProduct.images.map((image) => ({
@@ -592,17 +592,17 @@ export default function Products() {
                 </div>
 
                 {/* Información del producto */}
-<div className="p-4 md:p-6 md:w-1/2 flex flex-col flex-1">
+<div className="p-2 md:p-9 md:w-1/2 flex flex-col flex-4">
 
-                  <p className="text-terra-600 text-base md:text-lg font-medium mb-2">{selectedProduct.category}</p>
-                  <p className="text-terra-700 text-sm md:text-lg mb-4">{selectedProduct.description}</p>
+                  <p className="text-terra-600 text-base md:text-lg font-medium mb-1">{selectedProduct.category}</p>
+                  <p className="text-terra-700 text-sm md:text-lg mb-6">{selectedProduct.description}</p>
                 </div>
               </div>
 
               {/* Barra inferior de acciones (sticky) */}
               <div className="sticky bottom-0 bg-white border-t border-terra-100 p-3">
                 {/* Precio */}
-                <div className="text-center mb-1 bg-terra-50 py-2 rounded-lg">
+                <div className="text-center mb-0 bg-terra-50 py-1 rounded-lg">
                   {selectedProduct.onSale && selectedProduct.salePrice ? (
                     <>
                       <span className="text-2xl md:text-3xl font-bold text-red-500">${selectedProduct.salePrice}</span>
