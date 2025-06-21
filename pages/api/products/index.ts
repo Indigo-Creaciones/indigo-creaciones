@@ -107,8 +107,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           category: fields.category?.[0] || '',
           description: fields.description?.[0] || '',
           price: parseFloat(fields.price?.[0] || '0'),
-          images: uploadedImages,
+          featured: fields.featured?.[0] === 'true',
+          onSale: fields.onSale?.[0] === 'true',
+          salePrice: fields.salePrice?.[0] ? parseFloat(fields.salePrice[0]) : undefined,
+          images: uploadedImages
         })
+
         return res.status(201).json(product)
 
       case 'DELETE':

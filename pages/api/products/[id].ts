@@ -83,8 +83,12 @@ export default async function handler(
           name: fields.name?.[0],
           category: fields.category?.[0],
           description: fields.description?.[0],
-          price: fields.price?.[0] ? parseFloat(fields.price[0]) : undefined
+          price: fields.price?.[0] ? parseFloat(fields.price[0]) : undefined,
+          featured: fields.featured?.[0] === 'true',
+          onSale: fields.onSale?.[0] === 'true',
+          salePrice: fields.salePrice?.[0] ? parseFloat(fields.salePrice[0]) : undefined
         }
+
 
         // Si se suben nuevos archivos, procesarlos y eliminar los antiguos
         if (Object.keys(files).length > 0) {

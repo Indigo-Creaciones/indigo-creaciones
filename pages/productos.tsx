@@ -92,7 +92,14 @@ export default function Products() {
           })
           .filter((i: CloudinaryImage | null): i is CloudinaryImage => i !== null)
 
-        return { ...p, id: p._id, images }
+  return { 
+    ...p, 
+    id: p._id, 
+    images,
+    featured: p.featured || false,
+    onSale: p.onSale || false,
+    salePrice: p.salePrice
+  }
       })
       // Solo actualiza si hay cambios
       if (JSON.stringify(newProducts) !== JSON.stringify(products)) {
@@ -511,22 +518,24 @@ export default function Products() {
             {/* Contenedor principal del Modal */}
 <div className="bg-white w-full rounded-2xl max-w-3xl max-h-[85vh] overflow-hidden shadow-2xl border border-terra-100 flex flex-col relative">
 
-
-
               {/* Encabezado */}
               <div className="sticky top-0 bg-white px-4 py-1.5 md:p-1 border-b border-terra-100 flex items-center justify-between">
+                {/* Etiquetas de Oferta/Destacado */}
+                <div className="absolute top-5 left-2 z-10 flex flex-row items-center gap-2">
+                  {selectedProduct.featured && (
+                    <span className="product-tag bg-yellow-400 text-terra-800 text-xs px-1 py-0.5 rounded-full font-semibold shadow sm:px-2 sm:py-1 whitespace-nowrap flex-shrink-0">
+                      Destacado
+                    </span>
+                  )}
+                  {selectedProduct.onSale && (
+                    <span className="product-tag bg-red-500 text-white text-xs px-1 py-0.5 rounded-full font-semibold shadow sm:px-2 sm:py-1 whitespace-nowrap flex-shrink-0">Oferta</span>
+                  )}
+                </div>
+
                 <div className="flex-1 min-w-0 pr-8 text-center">
                   <h2 className="text-xl md:text-3xl font-playfair text-terra-700 truncate">
                     {selectedProduct.name}
                   </h2>
-                  <div className="flex flex-wrap gap-2 mt-1">
-                    {selectedProduct.featured && (
-                      <span className="product-tag bg-yellow-400 text-terra-800">Destacado</span>
-                    )}
-                    {selectedProduct.onSale && (
-                      <span className="product-tag bg-red-500 text-white">Oferta</span>
-                    )}
-                  </div>
                 </div>
                 <button
                   className="absolute right-2 top-2 flex items-center justify-center w-8 h-8 rounded-full bg-terra-100 text-terra-600 hover:bg-terra-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-terra-300 transition-all duration-200"

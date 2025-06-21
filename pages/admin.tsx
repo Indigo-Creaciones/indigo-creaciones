@@ -14,6 +14,9 @@ interface Product {
   description: string
   price: number
   images: string[]
+  featured?: boolean
+  onSale?: boolean
+  salePrice?: number
 }
 
 const categories = [
@@ -31,8 +34,12 @@ export default function Admin() {
     category: categories[0],
     description: '',
     price: '',
-    images: [] as File[]
+    images: [] as File[],
+    featured: false,
+    onSale: false,
+    salePrice: ''
   })
+
   const [isEditing, setIsEditing] = useState(false)
   const [editProductId, setEditProductId] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
@@ -40,7 +47,7 @@ export default function Admin() {
   const [productToDelete, setProductToDelete] = useState<Product | null>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
 
-  // Cargar productos desde la API
+  // Fetch products from API
   const fetchProducts = async () => {
     setLoading(true)
     try {
@@ -62,10 +69,15 @@ export default function Admin() {
     }
   }, [router])
 
-  // Manejo de cambios en el formulario
+  // Handle form changes
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target
     setForm(prev => ({ ...prev, [name]: value }))
+  }
+
+  const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, checked } = e.target
+    setForm(prev => ({ ...prev, [name]: checked }))
   }
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -76,7 +88,7 @@ export default function Admin() {
     }
   }
 
-  // Agregar o editar producto
+  // Add or edit product
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
@@ -86,6 +98,13 @@ export default function Admin() {
       formData.append('category', form.category)
       formData.append('description', form.description)
       formData.append('price', form.price)
+      // Convert booleans to strings for server
+      formData.append('featured', form.featured ? 'true' : 'false')
+      formData.append('onSale', form.onSale ? 'true' : 'false')
+      if (form.salePrice !== '') {
+        formData.append('salePrice', form.salePrice)
+      }
+
       form.images.forEach((img) => formData.append('images', img))
 
       let res, data
@@ -94,27 +113,33 @@ export default function Admin() {
           method: 'PUT',
           body: formData
         })
-        data = await res.json()
-        if (res.ok) {
-          toast.success('Producto modificado con éxito')
-        } else {
-          throw new Error(data.error || 'Error al modificar producto')
-        }
       } else {
         res = await fetch('/api/products', {
           method: 'POST',
           body: formData
         })
-        data = await res.json()
-        if (res.ok) {
-          toast.success('Producto agregado con éxito')
-        } else {
-          throw new Error(data.error || 'Error al agregar producto')
-        }
       }
-      setForm({ name: '', category: categories[0], description: '', price: '', images: [] })
+      data = await res.json()
+      if (res.ok) {
+        toast.success(isEditing ? 'Producto modificado con éxito' : 'Producto agregado con éxito')
+      } else {
+        throw new Error(data.error || 'Error al guardar producto')
+      }
+
+      // Reset form
+      setForm({ 
+        name: '', 
+        category: categories[0], 
+        description: '', 
+        price: '', 
+        images: [], 
+        featured: false, 
+        onSale: false, 
+        salePrice: '' 
+      })
       setIsEditing(false)
       setEditProductId(null)
+
       if (fileInputRef.current) fileInputRef.current.value = ''
       fetchProducts()
     } catch (err: any) {
@@ -132,8 +157,12 @@ export default function Admin() {
       category: product.category,
       description: product.description,
       price: product.price.toString(),
-      images: []
+      images: [],
+      featured: product.featured || false,
+      onSale: product.onSale || false,
+      salePrice: product.salePrice ? product.salePrice.toString() : ''
     })
+
     if (fileInputRef.current) fileInputRef.current.value = ''
   }
 
@@ -284,8 +313,52 @@ export default function Admin() {
                   disabled={loading}
                 />
                 <p className="text-xs text-terra-500 mt-1">Las imágenes se convertirán automáticamente a .webp</p>
-              </div>
-            </div>
+</div>
+</div>
+
+<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+  <div>
+    <label htmlFor="featured" className="block text-terra-700 mb-1 font-medium">Destacado</label>
+    <input
+      type="checkbox"
+      id="featured"
+      name="featured"
+      checked={form.featured}
+      onChange={handleCheckboxChange}
+      className="mr-2"
+      disabled={loading}
+    />
+  </div>
+  <div>
+    <label htmlFor="onSale" className="block text-terra-700 mb-1 font-medium">En Oferta</label>
+    <input
+      type="checkbox"
+      id="onSale"
+      name="onSale"
+      checked={form.onSale}
+      onChange={handleCheckboxChange}
+      className="mr-2"
+      disabled={loading}
+    />
+  </div>
+</div>
+{form.onSale && (
+  <div>
+    <label htmlFor="salePrice" className="block text-terra-700 mb-1 font-medium">Precio de Oferta</label>
+    <input
+      type="number"
+      id="salePrice"
+      name="salePrice"
+      required
+      className="w-full p-3 border border-terra-200 rounded-lg focus:ring-2 focus:ring-terra-400 focus:border-transparent bg-terra-50 text-terra-800 placeholder-terra-400 shadow-sm"
+      value={form.salePrice}
+      onChange={handleInputChange}
+      placeholder="$0.00"
+      disabled={loading}
+    />
+  </div>
+)}
+
             <motion.button
               whileHover={{ scale: 1.03 }}
               whileTap={{ scale: 0.98 }}
@@ -319,16 +392,18 @@ export default function Admin() {
                   <th className="border border-terra-200 px-4 py-2 text-left font-semibold">Nombre</th>
                   <th className="border border-terra-200 px-4 py-2 text-left font-semibold">Categoría</th>
                   <th className="border border-terra-200 px-4 py-2 text-left font-semibold">Precio</th>
+                  <th className="border border-terra-200 px-4 py-2 text-center font-semibold">Destacado</th>
+                  <th className="border border-terra-200 px-4 py-2 text-center font-semibold">Oferta</th>
                   <th className="border border-terra-200 px-4 py-2 text-center font-semibold">Editar</th>
                   <th className="border border-terra-200 px-4 py-2 text-center font-semibold">Eliminar</th>
                 </tr>
               </thead>
               <tbody>
                 {loading ? (
-                  <tr><td colSpan={5} className="text-center p-4 text-terra-500">Cargando...</td></tr>
+                  <tr><td colSpan={7} className="text-center p-4 text-terra-500">Cargando...</td></tr>
                 ) : products.length === 0 ? (
                   <tr>
-                    <td colSpan={5} className="text-center p-4 text-terra-500">
+                    <td colSpan={7} className="text-center p-4 text-terra-500">
                       No hay productos disponibles.
                     </td>
                   </tr>
@@ -343,7 +418,38 @@ export default function Admin() {
                     >
                       <td className="border border-terra-200 px-4 py-2">{product.name}</td>
                       <td className="border border-terra-200 px-4 py-2">{product.category}</td>
-                      <td className="border border-terra-200 px-4 py-2">${product.price}</td>
+                      <td className="border border-terra-200 px-4 py-2">
+                        {product.onSale && product.salePrice ? (
+                          <span>
+                            <span className="text-red-500 font-bold">${product.salePrice}</span>
+                            <span className="text-terra-400 line-through ml-2">${product.price}</span>
+                          </span>
+                        ) : (
+                          <span>${product.price}</span>
+                        )}
+                      </td>
+                      <td className="border border-terra-200 px-4 py-2 text-center">
+                        {product.featured ? (
+                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                            Sí
+                          </span>
+                        ) : (
+                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                            No
+                          </span>
+                        )}
+                      </td>
+                      <td className="border border-terra-200 px-4 py-2 text-center">
+                        {product.onSale ? (
+                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                            Sí
+                          </span>
+                        ) : (
+                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                            No
+                          </span>
+                        )}
+                      </td>
                       <td className="border border-terra-200 px-4 py-2 text-center">
                         <button
                           className="group bg-terra-100 hover:bg-terra-200 text-terra-600 hover:text-terra-800 p-2 rounded-full shadow transition-all focus:outline-none focus:ring-2 focus:ring-terra-400 flex items-center justify-center mx-auto"
