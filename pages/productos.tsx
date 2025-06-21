@@ -195,7 +195,7 @@ export default function Products() {
 
   // Función para abrir WhatsApp
   const openWhatsApp = (product: Product) => {
-    const message = `Hola! Me interesa el producto "${product.name}" de precio $${product.price}. ¿Podrías darme más información?`
+    const message = `Hola! Me interesa el producto "${product.name}" de precio $${product.price}. ¿Podrías darme más información?`;
     const url = `https://wa.me/5493777283023?text=${encodeURIComponent(message)}`
     window.open(url, '_blank')
   }
@@ -213,10 +213,9 @@ export default function Products() {
 
   const handleWhatsAppClick = (e: React.MouseEvent, product: Product) => {
     e.stopPropagation()
-    const productUrl = `${window.location.origin}/productos/${product.id}`
     const message = `¡Hola! Me interesa el producto "${product.name}" de precio $${
       product.onSale && product.salePrice ? product.salePrice : product.price
-    }.\n\nPuedes ver el producto aquí: ${productUrl}\n\n¿Podrías darme más información?`
+    }. ¿Podrías darme más información?`
     const url = `https://wa.me/5493777283023?text=${encodeURIComponent(message)}`
     window.open(url, '_blank')
   }
