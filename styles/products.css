@@ -1,7 +1,7 @@
 /* Estilos para la galería de imágenes */
 .product-gallery {
   width: 100%;
-  max-width: 400px;
+  max-width: 420px;
   margin: 0 auto;
 }
 
@@ -59,7 +59,7 @@
 /* Estilos para etiquetas de productos */
 .product-tag {
   position: absolute;
-  padding: 0.5rem 1rem;
+  padding: 0.3rem 0.6rem;
   border-radius: 9999px;
   font-size: 0.75rem;
   font-weight: 600;

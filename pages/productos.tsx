@@ -541,7 +541,7 @@ export default function Products() {
                 {/* Galería */}
 <div className="relative w-full md:w-1/2 h-auto max-h-[60vh] md:max-h-full bg-terra-50 flex items-center justify-center p-2">
                   {/* Etiquetas de Oferta/Destacado */}
-                  <div className="absolute top-1 left-7 z-10 flex flex-col items-center space-y-6">
+                  <div className="absolute top-2 left-10 z-10 flex flex-col items-center space-y-6">
                     {selectedProduct.featured && (
                       <span className="product-tag bg-yellow-400 text-terra-800 text-xs px-2 py-1 rounded-full font-semibold shadow whitespace-nowrap">
                         Destacado
